@@ -1,0 +1,41 @@
+body {
+  margin: 80px 0 50px 80px;
+}
+
+p {
+  margin: 0;
+}
+
+input {
+  margin: 5px;
+}
+
+p.search {
+  margin: 25px 0 25px 0;
+}
+
+p.search-box {
+  margin: 25px 0 0 230px;
+}
+
+p.box {
+  margin: 25px 0 25px 0;
+}
+
+p.tel {
+  margin: 25px 0 25px 0;
+}
+
+ #thead {
+  display: none;
+}
+
+td {
+  text-align: center;
+  border: solid 1px black;
+}
+
+th {
+  border: solid 1px black;
+}
+
