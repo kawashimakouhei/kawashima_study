@@ -1,9 +1,9 @@
 'use strict';
 
 const list = [
-  {name:'山田',birthday: '1988年4月24日',address:'神奈川県横浜市日吉◯丁目△△番地◯◯号△△マンション101号室'} ,
-  {name:'佐藤',birthday: '1990年6月20日',address:'東京都大田区'} ,
-  {name:'山田',birthday: '1999年10月3日',address:'東京都港区'} ,
+  {name:'山田',birthday: '1988年4月24日',postcode:'2230061'} ,
+  {name:'佐藤',birthday: '1990年6月20日',postcode:'2230061'} ,
+  {name:'山田',birthday: '1999年10月3日',postcode:'223-0062'} ,
 ];
 
 const btn = document.getElementById('btn');
@@ -45,19 +45,23 @@ function ListFound(name) {
     tr.appendChild(td3);
     td1.textContent = result.name.substring(0,15)
     td2.textContent = result.birthday.substring(0,15)
-    td3.textContent = result.address.substring(0,30)
+
+      // 郵便番号より取得した住所データを表示
+    fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${result.postcode}`)
+    .then(response => response.json())
+    .then(data => {
+      let address = data.results[0].address1 + data.results[0].address2 + data.results[0].address3
+      td3.textContent = address.substring(0,30)
+    })
     });
   }
 }
 
 //検索入力欄フォーカスアウトチェック処理
 search.addEventListener('focusout', (e) => {
-  if (search.value.match(/^[^\x01-\x7E\uFF61-\uFF9F]+$/) && search.value.length <= 10) {    
-  } else if (search.value === '') {
-    alert('入力欄が未入力です')
-  } else if (search.value.length > 10) {
-    alert('全角文字１０文字以内の入力をお願い致します')
-  } else {
+  if (search.value.length > 10) {   
+    alert('10文字以内での入力をお願い致します')
+  } else if (search.value.match(/^[^\x20-\x7e]*$/) === null) {
     alert('全角文字での入力をお願い致します')
   }
  });
@@ -66,7 +70,6 @@ search.addEventListener('focusout', (e) => {
 TelNo.addEventListener('focusout', (e) => {
   if (TelNo.value.match(/^[A-Za-z0-9]*$/) && TelNo.value.length == 11) {    
   } else if (TelNo.value === '') {
-    alert('入力欄が未入力です')
   } else {
     alert('電話番号は半角数字11桁での入力をお願い致します')
   } 
@@ -74,7 +77,13 @@ TelNo.addEventListener('focusout', (e) => {
 
  // チェックボックスクリック時処理
 all.addEventListener('click' , () => {
-  for(let i = 0; i < checks.length; i++) {
-    checks[i].checked = true
+  if(all.checked){
+    for(let i = 0; i < checks.length; i++) {
+      checks[i].checked = true
+    }
+  } else {
+    for(let i = 0; i < checks.length; i++) {
+      checks[i].checked = false
+    }
   }
 });
