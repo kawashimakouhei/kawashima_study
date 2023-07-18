@@ -12,10 +12,12 @@ const result = document.getElementById('result');
 const TelNo = document.getElementById('TelNo');
 const all = document.getElementById('CheckAll');
 const  checks = document.getElementsByName('checks');
+const thead = document.getElementById('thead');
 
 //検索ボタンクリック時処理
 btn.addEventListener('click' , () => {
   const re = search.value;
+  while( thead.rows[ 1 ] ) thead.deleteRow( 1 );
   if (re.length === 0) {
     alert('入力欄が未入力です')
     return
@@ -26,35 +28,35 @@ btn.addEventListener('click' , () => {
 
 function ListFound(name) {
   let results = list.filter((list) => list.name === name );
-  if (results.length === 0){
-    result.textContent = '検索結果:0件'
-  } 
-  else {
-    result.textContent = '検索結果:' + results.length + '件'
-    thead.style.display = "block";
-
+  let data_count = 0;
+  
     results.forEach((result) => {
-    const thead = document.getElementById('thead');
-    const tr = document.createElement('tr');
-    const td1 = document.createElement('td');
-    const td2 = document.createElement('td');
-    const td3 = document.createElement('td');
-    thead.appendChild(tr);
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tr.appendChild(td3);
-    td1.textContent = result.name.substring(0,15)
-    td2.textContent = result.birthday.substring(0,15)
+      const tr = document.createElement('tr');
+      const td1 = document.createElement('td');
+      const td2 = document.createElement('td'); 
+      const td3 = document.createElement('td');
+      thead.appendChild(tr);
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      td1.textContent = result.name.substring(0,15)
+      td2.textContent = result.birthday.substring(0,15)
 
       // 郵便番号より取得した住所データを表示
-    fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${result.postcode}`)
-    .then(response => response.json())
-    .then(data => {
-      let address = data.results[0].address1 + data.results[0].address2 + data.results[0].address3
-      td3.textContent = address.substring(0,30)
-    })
-    });
-  }
+      fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${result.postcode}`)
+        .then(response => response.json())
+        .then(data => {
+          let address = data.results[0].address1 + data.results[0].address2 + data.results[0].address3
+          td3.textContent = address.substring(0,30)
+        })
+        data_count = data_count + 1;
+      });
+      result.textContent = '検索結果:' + data_count + '件'
+      if(data_count == 0) {
+        thead.style.display = "none";
+      } else {
+        thead.style.display = "block";
+      }
 }
 
 //検索入力欄フォーカスアウトチェック処理
